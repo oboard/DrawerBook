@@ -7,15 +7,22 @@
     tools:overrideLibrary="android.support.v4" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="21"
         android:targetSdkVersion="22"
-        tools:overrideLibrary="android.support.graphics.drawable.animated,android.support.compat,android.support.v4,android.support.coreutils,android.support.mediacompat,android.support.coreui,android.support.fragment" />
+        tools:overrideLibrary="android.support.transition,android.support.v4,android.support.compat,android.support.mediacompat,android.support.coreutils,android.support.coreui,android.support.fragment,android.support.graphics.drawable.animated" />
+
+    <meta-data
+        android:name="android.support.VERSION"
+        android:value="25.3.1" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.oboard.drawbook.DrawActivity"
+            android:theme="@style/AppTheme.Base" />
         <activity
             android:name="com.oboard.drawbook.MainActivity"
             android:label="@string/app_name" >

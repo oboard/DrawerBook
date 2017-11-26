@@ -1,18 +1,22 @@
 package com.oboard.drawbook;
 
 import android.app.WallpaperManager;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,11 +24,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     mData.add(map);
                     sa.notifyItemInserted(i);
                     Snackbar.make(coordinator, "Done", Snackbar.LENGTH_SHORT).show();
-                    
+
 
                     recycler.requestLayout();
                     recycler.getParent().requestLayout();
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         recycler.setHasFixedSize(true);
         sa = new MyAdapter(mData);
         recycler.setAdapter(sa);
-        
+
         //先实例化Callback
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(sa);
         //用Callback构造ItemtouchHelper
@@ -113,19 +116,19 @@ public class MainActivity extends AppCompatActivity {
         void onItemDissmiss(int position);
     }
 
-    public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback{
+    public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
         private ItemTouchHelperAdapter mAdapter;
 
-        public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter){
+        public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
             mAdapter = adapter;
         }
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            int swipeFlags = ItemTouchHelper.LEFT;
-            return makeMovementFlags(dragFlags,swipeFlags);
+            int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+            return makeMovementFlags(dragFlags, swipeFlags);
         }
 
         @Override
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            mAdapter.onItemMove(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+            mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
             return true;
         }
 
@@ -149,13 +152,14 @@ public class MainActivity extends AppCompatActivity {
             mAdapter.onItemDissmiss(viewHolder.getAdapterPosition());
         }
     }
-    
+
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
         public List<Map<String, Object>> datas = null;
         public MyAdapter(List<Map<String, Object>> datas) {
             this.datas = datas;
         }
+
         //创建新View，被LayoutManager所调用
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -163,17 +167,34 @@ public class MainActivity extends AppCompatActivity {
             ViewHolder vh = new ViewHolder(view);
             return vh;
         }
+
         //将数据与界面进行绑定的操作
         @Override
-        public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
             viewHolder.mTextView.setText((String) datas.get(position).get("text"));
             viewHolder.mImageView.setImageBitmap(S.getStorePic((String) datas.get(position).get("image")));
+
+            OnClickListener oc = new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle shareNames = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, viewHolder.mImageView, "share").toBundle();
+                    Intent intent = new Intent(MainActivity.this, DrawActivity.class);
+                    intent.putExtra("image", (String) mData.get(position).get("image"));
+                    intent.putExtra("text", (String) mData.get(position).get("text"));
+                    ActivityCompat.startActivity(MainActivity.this, intent, shareNames);
+                }
+            };
+            
+            viewHolder.mTextView.setOnClickListener(oc);
+            viewHolder.mImageView.setOnClickListener(oc);
         }
+        
         //获取数据的数量
         @Override
         public int getItemCount() {
             return datas.size();
         }
+
         //自定义的ViewHolder，持有每个Item的的所有界面元素
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView mTextView;

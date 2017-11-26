@@ -11,6 +11,10 @@
         android:theme="@style/AppTheme">
         
         <activity
+            android:name=".DrawActivity" 
+            android:theme="@style/AppTheme.Base"/>
+        
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
