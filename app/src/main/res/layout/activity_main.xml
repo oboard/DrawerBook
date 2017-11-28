@@ -52,9 +52,8 @@
 			<android.support.v7.widget.RecyclerView
 				android:id="@+id/main_recycler"
 				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
-				android:scrollbars="none"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+				android:layout_height="wrap_content"
+				android:scrollbars="none"/>
 
 	</android.support.v4.widget.NestedScrollView>
 

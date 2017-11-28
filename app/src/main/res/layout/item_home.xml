@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<com.oboard.drawbook.CardView
+    android:id="@+id/item_home_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:layout_height="80dp"
+	android:layout_height="100dp"
 	android:orientation="vertical"
-	android:padding="10dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:translationZ="0dp"
+    android:stateListAnimator="@drawable/floating">
 
+    <View
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    
 	<ImageView
+        android:layout_margin="10dp"
 		android:id="@+id/item_home_image"
-		android:layout_height="60dp"
-		android:layout_width="60dp"
-        android:transitionName="share" />
+		android:layout_height="80dp"
+		android:layout_width="80dp"/>
 
 	<TextView
 		android:id="@+id/item_home_text"
+		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:layout_height="match_parent"
 		android:layout_width="match_parent"
-		android:layout_marginLeft="70dp"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="90dp"
 		android:singleLine="true"
-		android:maxLines="1" />
+		android:maxLines="1"/>
 
-</FrameLayout>
+</com.oboard.drawbook.CardView>
 

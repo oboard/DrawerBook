@@ -1,18 +1,20 @@
 package com.oboard.drawbook;
 
 import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewCompat;
+import android.support.transition.Transition;
+import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -82,12 +84,24 @@ public class MainActivity extends AppCompatActivity {
         collapsing_image.setImageDrawable(wm.getDrawable());
 
         loadData();
-        //创建默认的线性LayoutManager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(mLayoutManager);
+        recycler.setNestedScrollingEnabled(false);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         recycler.setHasFixedSize(true);
         sa = new MyAdapter(mData);
+        sa.setOnItemClickListener(this, new OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Transition explode = new android.support.transition.AutoTransition();
+                    explode.setDuration(1000);
+                    TransitionManager.beginDelayedTransition(recycler, explode);
+                    
+                    Intent intent = new Intent(MainActivity.this, DrawActivity.class);
+                    intent.putExtra("image", (String) mData.get(position).get("image"));
+                    intent.putExtra("text", (String) mData.get(position).get("text"));
+                    startActivity(intent);
+                }
+            });
         recycler.setAdapter(sa);
 
         //先实例化Callback
@@ -118,35 +132,47 @@ public class MainActivity extends AppCompatActivity {
 
     public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
+        private static final float ALPHA_FULL = 1.0f;
         private ItemTouchHelperAdapter mAdapter;
 
         public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
             mAdapter = adapter;
         }
-
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-            return makeMovementFlags(dragFlags, swipeFlags);
+            if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                final int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            } else {
+                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
         }
-
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+                viewHolder.itemView.setAlpha(alpha);
+                viewHolder.itemView.setTranslationX(dX);
+            } else {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        }
         @Override
         public boolean isLongPressDragEnabled() {
             return true;
         }
-
         @Override
         public boolean isItemViewSwipeEnabled() {
             return true;
         }
-
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
             return true;
         }
-
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             mAdapter.onItemDissmiss(viewHolder.getAdapterPosition());
@@ -155,11 +181,17 @@ public class MainActivity extends AppCompatActivity {
 
     class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
+        public Context context;
         public List<Map<String, Object>> datas = null;
         public MyAdapter(List<Map<String, Object>> datas) {
             this.datas = datas;
         }
 
+        private OnItemClickListener mOnItemClickListener;
+        public void setOnItemClickListener(Context context, OnItemClickListener mOnItemClickListener) {
+            this.mOnItemClickListener = mOnItemClickListener;
+            this.context = context;
+        }
         //创建新View，被LayoutManager所调用
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -173,22 +205,15 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
             viewHolder.mTextView.setText((String) datas.get(position).get("text"));
             viewHolder.mImageView.setImageBitmap(S.getStorePic((String) datas.get(position).get("image")));
-
-            OnClickListener oc = new OnClickListener() {
+            
+            viewHolder.mView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Bundle shareNames = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, viewHolder.mImageView, "share").toBundle();
-                    Intent intent = new Intent(MainActivity.this, DrawActivity.class);
-                    intent.putExtra("image", (String) mData.get(position).get("image"));
-                    intent.putExtra("text", (String) mData.get(position).get("text"));
-                    ActivityCompat.startActivity(MainActivity.this, intent, shareNames);
+                    mOnItemClickListener.onItemClick(viewHolder.mImageView, position);
                 }
-            };
-            
-            viewHolder.mTextView.setOnClickListener(oc);
-            viewHolder.mImageView.setOnClickListener(oc);
+            });
         }
-        
+
         //获取数据的数量
         @Override
         public int getItemCount() {
@@ -197,10 +222,12 @@ public class MainActivity extends AppCompatActivity {
 
         //自定义的ViewHolder，持有每个Item的的所有界面元素
         public class ViewHolder extends RecyclerView.ViewHolder {
+            public CardView mView;
             public TextView mTextView;
             public ImageView mImageView;
             public ViewHolder(View view) {
                 super(view);
+                mView = (CardView) view.findViewById(R.id.item_home_view);
                 mTextView = (TextView) view.findViewById(R.id.item_home_text);
                 mImageView = (ImageView) view.findViewById(R.id.item_home_image);
             }
@@ -226,8 +253,17 @@ public class MainActivity extends AppCompatActivity {
             notifyItemRemoved(position);
         }
 
+        public void onItemFresh(int position) {
+            notifyItemChanged(position);
+        }
+        
+    }
+
+    interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
 }
     
+
 
