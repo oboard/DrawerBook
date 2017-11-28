@@ -44,6 +44,12 @@
 
 	</android.support.design.widget.AppBarLayout>
 
+    <ImageView
+        android:id="@+id/main_share_image"
+        android:layout_height="80dp"
+        android:layout_width="80dp"
+		android:transitionName="share"/>
+    
 	<android.support.v4.widget.NestedScrollView
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"

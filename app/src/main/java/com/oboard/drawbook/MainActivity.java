@@ -1,5 +1,6 @@
 package com.oboard.drawbook;
 
+import android.app.ActivityOptions;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +12,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.transition.Transition;
-import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recycler;
     FloatingActionButton add;
     CoordinatorLayout coordinator;
-    ImageView collapsing_image;
+    ImageView collapsing_image, share_image;
 
     List<Map<String, Object>> mData;
     MyAdapter sa;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         recycler = (RecyclerView) findViewById(R.id.main_recycler);
         add = (FloatingActionButton) findViewById(R.id.main_add);
         toolbar.setTitle(R.string.app_name);
+        share_image = (ImageView) findViewById(R.id.main_share_image);
 
         setSupportActionBar(toolbar);
 
@@ -74,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                     sa.notifyItemInserted(i);
                     Snackbar.make(coordinator, "Done", Snackbar.LENGTH_SHORT).show();
 
-
                     recycler.requestLayout();
                     recycler.getParent().requestLayout();
                 }
@@ -92,14 +92,17 @@ public class MainActivity extends AppCompatActivity {
         sa.setOnItemClickListener(this, new OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    Transition explode = new android.support.transition.AutoTransition();
-                    explode.setDuration(1000);
-                    TransitionManager.beginDelayedTransition(recycler, explode);
-                    
+                    Rect r = new Rect();
+                    view.getGlobalVisibleRect(r);
+                    share_image.setX(r.left);
+                    share_image.setY(r.top);
+                    share_image.setImageDrawable(((ImageView)view).getDrawable());
+                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, share_image, "share");
+
                     Intent intent = new Intent(MainActivity.this, DrawActivity.class);
                     intent.putExtra("image", (String) mData.get(position).get("image"));
                     intent.putExtra("text", (String) mData.get(position).get("text"));
-                    startActivity(intent);
+                    startActivity(intent, transitionActivityOptions.toBundle());
                 }
             });
         recycler.setAdapter(sa);
@@ -205,13 +208,13 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
             viewHolder.mTextView.setText((String) datas.get(position).get("text"));
             viewHolder.mImageView.setImageBitmap(S.getStorePic((String) datas.get(position).get("image")));
-            
+
             viewHolder.mView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnItemClickListener.onItemClick(viewHolder.mImageView, position);
-                }
-            });
+                    @Override
+                    public void onClick(View view) {
+                        mOnItemClickListener.onItemClick(viewHolder.mImageView, position);
+                    }
+                });
         }
 
         //获取数据的数量
@@ -222,12 +225,12 @@ public class MainActivity extends AppCompatActivity {
 
         //自定义的ViewHolder，持有每个Item的的所有界面元素
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public CardView mView;
+            public FrameLayout mView;
             public TextView mTextView;
             public ImageView mImageView;
             public ViewHolder(View view) {
                 super(view);
-                mView = (CardView) view.findViewById(R.id.item_home_view);
+                mView = (FrameLayout) view.findViewById(R.id.item_home_view);
                 mTextView = (TextView) view.findViewById(R.id.item_home_text);
                 mImageView = (ImageView) view.findViewById(R.id.item_home_image);
             }
@@ -256,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemFresh(int position) {
             notifyItemChanged(position);
         }
-        
+
     }
 
     interface OnItemClickListener {
