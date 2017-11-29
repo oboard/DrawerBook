@@ -8,6 +8,7 @@
 	android:clickable="true"
 	android:focusable="true"
 	android:translationZ="0dp"
+    android:background="#ffffff"
 	android:stateListAnimator="@drawable/floating">
 
 	<View

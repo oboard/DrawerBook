@@ -43,16 +43,11 @@
 		</android.support.design.widget.CollapsingToolbarLayout>
 
 	</android.support.design.widget.AppBarLayout>
-
-    <ImageView
-        android:id="@+id/main_share_image"
-        android:layout_height="80dp"
-        android:layout_width="80dp"
-		android:transitionName="share"/>
     
 	<android.support.v4.widget.NestedScrollView
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
+        android:background="@color/colorBackground"
 		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 			<android.support.v7.widget.RecyclerView

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recycler;
     FloatingActionButton add;
     CoordinatorLayout coordinator;
-    ImageView collapsing_image, share_image;
+    ImageView collapsing_image;
 
     List<Map<String, Object>> mData;
     MyAdapter sa;
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         recycler = (RecyclerView) findViewById(R.id.main_recycler);
         add = (FloatingActionButton) findViewById(R.id.main_add);
         toolbar.setTitle(R.string.app_name);
-        share_image = (ImageView) findViewById(R.id.main_share_image);
 
         setSupportActionBar(toolbar);
 
@@ -91,18 +90,13 @@ public class MainActivity extends AppCompatActivity {
         sa = new MyAdapter(mData);
         sa.setOnItemClickListener(this, new OnItemClickListener() {
                 @Override
-                public void onItemClick(View view, int position) {
-                    Rect r = new Rect();
-                    view.getGlobalVisibleRect(r);
-                    share_image.setX(r.left);
-                    share_image.setY(r.top);
-                    share_image.setImageDrawable(((ImageView)view).getDrawable());
-                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, share_image, "share");
-
+                public void onItemClick(MyAdapter.ViewHolder viewholder, int position) {
                     Intent intent = new Intent(MainActivity.this, DrawActivity.class);
                     intent.putExtra("image", (String) mData.get(position).get("image"));
                     intent.putExtra("text", (String) mData.get(position).get("text"));
-                    startActivity(intent, transitionActivityOptions.toBundle());
+                    ImageView iv = new ImageView(MainActivity.this);
+                    ((FrameLayout)viewholder.mImageView.getParent()).addView(iv, viewholder.mImageView.getLayoutParams());
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, iv, "share").toBundle());
                 }
             });
         recycler.setAdapter(sa);
@@ -212,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
             viewHolder.mView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mOnItemClickListener.onItemClick(viewHolder.mImageView, position);
+                        mOnItemClickListener.onItemClick(viewHolder, position);
                     }
                 });
         }
@@ -240,10 +234,12 @@ public class MainActivity extends AppCompatActivity {
         public void onItemMove(int fromPosition, int toPosition) {
             //交换位置
             Collections.swap(mData, fromPosition, toPosition);
-            for (int i = 0; i < mData.size(); i++) {
+            for (int i = 1; i < mData.size(); i++) {
                 S.put("t" + i, (String) mData.get(i).get("text"))
                     .put("d" + i, (String) mData.get(i).get("image"))
                     .ok();
+                mData.get(i).put("text", S.get("t" + i, ""));
+                mData.get(i).put("image", S.get("t" + i, ""));
             }
             notifyItemMoved(fromPosition, toPosition);
         }
@@ -256,14 +252,10 @@ public class MainActivity extends AppCompatActivity {
             notifyItemRemoved(position);
         }
 
-        public void onItemFresh(int position) {
-            notifyItemChanged(position);
-        }
-
     }
 
     interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(MyAdapter.ViewHolder viewholder, int position);
     }
 
 }
