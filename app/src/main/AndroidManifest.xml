@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         
         <activity
-            android:name=".DrawActivity" 
+            android:name=".DrawActivity"
             android:theme="@style/AppTheme.Base"/>
         
         <activity

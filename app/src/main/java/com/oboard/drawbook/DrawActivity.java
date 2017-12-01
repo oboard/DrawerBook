@@ -12,38 +12,58 @@ import android.view.Menu;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.content.DialogInterface;
+import android.view.View.*;
+import android.view.*;
+import android.support.design.widget.*;
 
-public class DrawActivity extends AppCompatActivity {
+public class DrawActivity extends AppCompatActivity implements OnClickListener {
 
     String title, image;
     int pos = 0;
-
+	
+	//Main imageview
+	ImageView imageView;
+	ImageView item_emot;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(0);
         getSupportActionBar().setBackgroundDrawable(null);
-        
-        title = getIntent().getStringExtra("text");
+        getSupportActionBar().setElevation(0);
+
         image = getIntent().getStringExtra("image");
+        title = getIntent().getStringExtra("text");
         pos = getIntent().getIntExtra("pos", pos);
+        setContentView(R.layout.activity_draw);
         setTitle(title);
-        setContentView(R.layout.activity_draw);//决定在两个Activity之间切换时，指定两个Activity中对应的Vi
 
         //此activity进入
         getWindow().setEnterTransition(new Fade().setDuration(225));
 
-        ImageView imageView = (ImageView)findViewById(R.id.draw_image);
+        imageView = (ImageView)findViewById(R.id.draw_image);
         imageView.setImageBitmap(S.getStorePic(image));
+		
+		//Tool Items
+		item_emot = (ImageView)findViewById(R.id.draw_item_emot);
+		item_emot.setOnClickListener(this);
     }
-
+	
+	@Override
+	public void onClick(View view) {
+		BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.draw_tool_emot));
+		if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+			behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+		else
+			behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+	}
+	
     //重写onCreateOptionMenu(Menu menu)方法，当菜单第一次被加载时调用
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.FIRST, 0, 0, "Edit").setIcon(R.drawable.create).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.FIRST, 0, 0, "Edit").setIcon(R.drawable.edit).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 

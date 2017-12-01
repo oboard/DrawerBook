@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:gravity="center">
@@ -9,18 +11,52 @@
 		android:id="@+id/draw_image"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
-        android:layout_marginBottom="48dp"
+		android:layout_marginBottom="48dp"
 		android:transitionName="share"/>
-    
-    <LinearLayout
-        android:id="@+id/draw_toolbar"
-        android:layout_height="48dp"
+
+	<LinearLayout
+		android:id="@+id/draw_toolbar"
+		android:layout_height="48dp"
 		android:layout_width="fill_parent"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom"
-        android:background="#ffffff"
-        android:translationZ="4dp"
-        android:elevation="4dp"/>
-    
+		android:orientation="horizontal"
+		android:layout_gravity="bottom"
+		android:background="#ffffff"
+		android:translationZ="4dp"
+		android:elevation="4dp">
+
+		<ImageView
+			android:id="@+id/draw_item_emot"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:layout_height="48dp"
+			android:layout_width="48dp"
+			android:clickable="true"
+			android:src="@drawable/emoticon"
+			android:scaleType="centerInside"/>
+
+	</LinearLayout>
+	
+	<android.support.v4.widget.NestedScrollView
+        android:id="@+id/draw_tool_emot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="50dp"
+                android:background="@color/colorPrimary"
+                android:text="人不会死在绝境，却往往栽在十字路口"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+		
+    </android.support.v4.widget.NestedScrollView>
+
 </FrameLayout>
 

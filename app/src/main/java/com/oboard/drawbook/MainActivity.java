@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         //4.4以上透明
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
