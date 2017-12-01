@@ -43,18 +43,18 @@
 		</android.support.design.widget.CollapsingToolbarLayout>
 
 	</android.support.design.widget.AppBarLayout>
-    
+
 	<android.support.v4.widget.NestedScrollView
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
         android:background="@color/colorBackground"
 		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-			<android.support.v7.widget.RecyclerView
-				android:id="@+id/main_recycler"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:scrollbars="none"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_recycler"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"/>
 
 	</android.support.v4.widget.NestedScrollView>
 
@@ -70,4 +70,3 @@
 		app:backgroundTint="@color/colorAccent"/>
 
 </android.support.design.widget.CoordinatorLayout>
-

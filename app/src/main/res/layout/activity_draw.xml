@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:orientation="vertical"
 	android:gravity="center">
 
 	<ImageView
 		android:id="@+id/draw_image"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
+        android:layout_marginBottom="48dp"
 		android:transitionName="share"/>
-
-</LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/draw_toolbar"
+        android:layout_height="48dp"
+		android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:background="#ffffff"
+        android:translationZ="4dp"
+        android:elevation="4dp"/>
+    
+</FrameLayout>
 

@@ -4,23 +4,22 @@
 	android:id="@+id/item_home_view"
 	android:layout_width="fill_parent"
 	android:layout_height="100dp"
-	android:orientation="vertical"
 	android:clickable="true"
 	android:focusable="true"
 	android:translationZ="0dp"
-    android:background="#ffffff"
+	android:background="#ffffff"
 	android:stateListAnimator="@drawable/floating">
 
 	<View
 		android:background="?android:attr/selectableItemBackground"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
+		android:layout_height="fill_parent" />
 
 	<ImageView
 		android:layout_margin="10dp"
 		android:id="@+id/item_home_image"
 		android:layout_height="80dp"
-		android:layout_width="80dp"/>
+		android:layout_width="80dp" />
 
 	<TextView
 		android:id="@+id/item_home_text"
@@ -29,7 +28,8 @@
 		android:layout_width="match_parent"
 		android:layout_marginLeft="100dp"
 		android:singleLine="true"
-		android:maxLines="1"/>
+		android:maxLines="1"
+		android:layout_marginTop="10dp" />
 
 </FrameLayout>
 

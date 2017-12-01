@@ -30,6 +30,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.os.Build;
+import android.view.WindowManager;
+import android.support.v7.widget.DividerItemDecoration;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout coordinator;
     ImageView collapsing_image;
 
-    List<Map<String, Object>> mData;
-    MyAdapter sa;
+    static List<Map<String, Object>> mData = new ArrayList<Map<String, Object>>();;
+    static MyAdapter sa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        //4.4以上透明
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
+            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
+        }
+        
         S.init(this, "main");
 
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -63,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     int i = S.get("tm", 0);
-                    S.addIndexX("tm", new String[] { "t", "d" }, new String[] { "Draw" + i, "draw" + System.currentTimeMillis()});
+                    S.addIndexX("tm", new String[] { "t", "d" }, new String[] { "Paper " + i, "paper" + System.currentTimeMillis()});
                     Bitmap b = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
                     new Canvas(b).drawColor(Color.BLACK);
                     S.storePic(S.get("d" + i, ""), b);
@@ -87,13 +96,16 @@ public class MainActivity extends AppCompatActivity {
         recycler.setLayoutManager(new LinearLayoutManager(this));
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         recycler.setHasFixedSize(true);
+        recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         sa = new MyAdapter(mData);
         sa.setOnItemClickListener(this, new OnItemClickListener() {
                 @Override
                 public void onItemClick(MyAdapter.ViewHolder viewholder, int position) {
+                    if (position >= mData.size()) return;
                     Intent intent = new Intent(MainActivity.this, DrawActivity.class);
                     intent.putExtra("image", (String) mData.get(position).get("image"));
                     intent.putExtra("text", (String) mData.get(position).get("text"));
+                    intent.putExtra("pos", position);
                     ImageView iv = new ImageView(MainActivity.this);
                     ((FrameLayout)viewholder.mImageView.getParent()).addView(iv, viewholder.mImageView.getLayoutParams());
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, iv, "share").toBundle());
@@ -109,15 +121,14 @@ public class MainActivity extends AppCompatActivity {
         touchHelper.attachToRecyclerView(recycler);
     }
 
-    public void loadData() {
-        List<Map<String, Object>> date_list = new ArrayList<Map<String, Object>>();
+    public static void loadData() {
+        mData.clear();
         for (int i = 0; i < S.get("tm", 0); i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("image", S.get("d" + i, ""));
             map.put("text", S.get("t" + i, ""));
-            date_list.add(map);
+            mData.add(map);
         }
-        mData = date_list;
     }
 
     public interface ItemTouchHelperAdapter {
@@ -199,14 +210,14 @@ public class MainActivity extends AppCompatActivity {
 
         //将数据与界面进行绑定的操作
         @Override
-        public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+        public void onBindViewHolder(final ViewHolder viewHolder, int position) {
             viewHolder.mTextView.setText((String) datas.get(position).get("text"));
             viewHolder.mImageView.setImageBitmap(S.getStorePic((String) datas.get(position).get("image")));
-
+            
             viewHolder.mView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mOnItemClickListener.onItemClick(viewHolder, position);
+                        mOnItemClickListener.onItemClick(viewHolder, viewHolder.getPosition());
                     }
                 });
         }
@@ -239,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                     .put("d" + i, (String) mData.get(i).get("image"))
                     .ok();
                 mData.get(i).put("text", S.get("t" + i, ""));
-                mData.get(i).put("image", S.get("t" + i, ""));
+                mData.get(i).put("image", S.get("d" + i, ""));
             }
             notifyItemMoved(fromPosition, toPosition);
         }
