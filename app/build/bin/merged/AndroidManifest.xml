@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.oboard.drawbook"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    tools:overrideLibrary="android.support.v4" >
+    android:versionName="1.0.0" >
 
     <uses-sdk
         android:minSdkVersion="21"
-        android:targetSdkVersion="22"
-        tools:overrideLibrary="android.support.transition,android.support.v4,android.support.compat,android.support.mediacompat,android.support.coreutils,android.support.coreui,android.support.fragment,android.support.graphics.drawable.animated" />
+        android:targetSdkVersion="22" />
 
     <meta-data
         android:name="android.support.VERSION"
