@@ -1,38 +1,22 @@
 package com.oboard.drawbook;
 
-import android.app.ActivityOptions;
-import android.app.WallpaperManager;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.support.design.widget.*;
+import android.support.v7.app.*;
+import android.support.v7.widget.*;
+import android.support.v7.widget.helper.*;
+import android.view.*;
+import android.view.View.*;
+import android.widget.*;
+import java.io.*;
+import java.util.*;
+
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import android.os.Build;
-import android.view.WindowManager;
-import android.support.v7.widget.DividerItemDecoration;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
             localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
         }
-        
+
         S.init(this, "main");
 
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -71,20 +55,43 @@ public class MainActivity extends AppCompatActivity {
         add.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int i = S.get("tm", 0);
-                    S.addIndexX("tm", new String[] { "t", "d" }, new String[] { "Paper " + i, "paper" + System.currentTimeMillis()});
-                    Bitmap b = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-                    new Canvas(b).drawColor(Color.BLACK);
-                    S.storePic(S.get("d" + i, ""), b);
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("image", S.get("d" + i, ""));
-                    map.put("text", S.get("t" + i, ""));
-                    mData.add(map);
-                    sa.notifyItemInserted(i);
-                    Snackbar.make(coordinator, "Done", Snackbar.LENGTH_SHORT).show();
+					PopupMenu pm = new PopupMenu(MainActivity.this, view);
+					pm.inflate(R.menu.add);
+					pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+							@Override
+							public boolean onMenuItemClick(MenuItem item) {
+								switch (item.getItemId()) {
+									case R.id.item_add_new:
+										//新建空白的图
+										int i = S.get("tm", 0);
+										S.addIndexX("tm", new String[] { "t", "d" }, new String[] { "Paper " + i, "paper" + System.currentTimeMillis()});
+										Bitmap b = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+										new Canvas(b).drawColor(Color.BLACK);
+										S.storePic(S.get("d" + i, ""), b);
+										Map<String, Object> map = new HashMap<String, Object>();
+										map.put("image", S.get("d" + i, ""));
+										map.put("text", S.get("t" + i, ""));
+										mData.add(map);
+										sa.notifyItemInserted(i);
+										Snackbar.make(coordinator, "Done", Snackbar.LENGTH_SHORT).show();
 
-                    recycler.requestLayout();
-                    recycler.getParent().requestLayout();
+										recycler.requestLayout();
+										recycler.getParent().requestLayout();
+
+										break;
+									case R.id.item_add_photo:
+										//来自图库的图
+										Intent intent = new Intent();
+										intent.setType("image/*");
+										intent.setAction(Intent.ACTION_GET_CONTENT);
+										startActivityForResult(intent, 1);
+
+										break;
+								}
+								return true;
+							}
+						});
+					pm.show();
                 }
             });
 
@@ -120,6 +127,37 @@ public class MainActivity extends AppCompatActivity {
         //调用ItemTouchHelper的attachToRecyclerView方法建立联系
         touchHelper.attachToRecyclerView(recycler);
     }
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Uri uri = data.getData();
+                ContentResolver cr = this.getContentResolver();
+				//接收图库的图
+                try {
+					int i = S.get("tm", 0);
+					S.addIndexX("tm", new String[] { "t", "d" }, new String[] { "Paper " + i, "paper" + System.currentTimeMillis()});
+					S.storePic(S.get("d" + i, ""), BitmapFactory.decodeStream(cr.openInputStream(uri)));
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("image", S.get("d" + i, ""));
+					map.put("text", S.get("t" + i, ""));
+					mData.add(map);
+					sa.notifyItemInserted(i);
+					Snackbar.make(coordinator, "Done", Snackbar.LENGTH_SHORT).show();
+
+					recycler.requestLayout();
+					recycler.getParent().requestLayout();
+                }
+				catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+	}
 
     public static void loadData() {
         mData.clear();
@@ -213,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder viewHolder, int position) {
             viewHolder.mTextView.setText((String) datas.get(position).get("text"));
             viewHolder.mImageView.setImageBitmap(S.getStorePic((String) datas.get(position).get("image")));
-            
+
             viewHolder.mView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {

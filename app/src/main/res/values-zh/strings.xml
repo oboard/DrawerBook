@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="dialog_1">确定</string>
+    <string name="dialog_2">取消</string>
+    <string name="dialog_3">名称</string>
+    <string name="add_1">新建</string>
+    <string name="add_2">来自图库</string>
+
+</resources>

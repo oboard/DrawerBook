@@ -69,5 +69,5 @@
 		app:layout_anchor="@id/main_collapsing"
 		app:layout_anchorGravity="bottom|right"
 		app:backgroundTint="@color/colorAccent"/>
-
+	
 </android.support.design.widget.CoordinatorLayout>

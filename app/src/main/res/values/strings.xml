@@ -2,5 +2,10 @@
 <resources>
 
     <string name="app_name">Drawer Book</string>
+    <string name="dialog_1">OK</string>
+    <string name="dialog_2">CANCEL</string>
+    <string name="dialog_3">Name</string>
+    <string name="add_1">New</string>
+    <string name="add_2">From gallery</string>
 
 </resources>

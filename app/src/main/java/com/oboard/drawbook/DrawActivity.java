@@ -53,11 +53,7 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
 	
 	@Override
 	public void onClick(View view) {
-		BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.draw_tool_emot));
-		if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-			behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-		else
-			behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+		
 	}
 	
     //重写onCreateOptionMenu(Menu menu)方法，当菜单第一次被加载时调用
@@ -74,7 +70,7 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
         } else if (item.getTitle().equals("Edit")) {
             final AppCompatEditText t = new AppCompatEditText(this);
             t.setText(getTitle());
-            new AlertDialog.Builder(this).setTitle("Name").setView(t).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(this).setTitle(R.string.dialog_3).setView(t).setPositiveButton(R.string.dialog_1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         title = t.getText().toString();
@@ -82,7 +78,7 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
                             .ok();
                         setTitle(title);
                     }
-                }).setNegativeButton("No", null)
+                }).setNegativeButton(R.string.dialog_2, null)
                 .show();
         }
         return super.onOptionsItemSelected(item);
