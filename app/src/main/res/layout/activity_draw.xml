@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	
+
 	<ImageView
 		android:id="@+id/draw_image"
 		android:layout_height="fill_parent"
@@ -25,13 +25,24 @@
 		android:elevation="4dp">
 
 		<ImageView
-			android:id="@+id/draw_item_emot"
+			android:id="@+id/draw_item_croprotate"
 			android:background="?android:attr/selectableItemBackgroundBorderless"
 			android:layout_height="48dp"
 			android:layout_width="48dp"
 			android:clickable="true"
-			android:src="@drawable/emoticon"
-			android:scaleType="centerInside"/>
+			android:src="@drawable/ic_crop_rotate_black_24dp"
+			android:scaleType="centerInside"
+			android:tint="@color/colorIcon"/>
+
+		<ImageView
+			android:id="@+id/draw_item_photo"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:layout_height="48dp"
+			android:layout_width="48dp"
+			android:clickable="true"
+			android:src="@drawable/ic_insert_photo_black_24dp"
+			android:scaleType="centerInside"
+			android:tint="@color/colorIcon"/>
 
 	</LinearLayout>
 

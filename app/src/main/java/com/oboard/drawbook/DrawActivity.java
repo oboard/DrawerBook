@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.view.View.*;
 import android.view.*;
 import android.support.design.widget.*;
+import android.content.*;
 
 public class DrawActivity extends AppCompatActivity implements OnClickListener {
 
@@ -23,7 +24,7 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
 	
 	//Main imageview
 	ImageView imageView;
-	ImageView item_emot;
+	ImageView item_croprotate;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +48,24 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
         imageView.setImageBitmap(S.getStorePic(image));
 		
 		//Tool Items
-		item_emot = (ImageView)findViewById(R.id.draw_item_emot);
-		item_emot.setOnClickListener(this);
+		item_croprotate = (ImageView)findViewById(R.id.draw_item_croprotate);
+		item_croprotate.setOnClickListener(this);
     }
 	
 	@Override
 	public void onClick(View view) {
-		
+		switch (view.getId()) {
+			case R.id.draw_item_croprotate:
+				//裁剪＆旋转 图片
+				startActivity(new Intent(this, CropActivity.class).putExtras(getIntent()));
+				break;
+		}
 	}
 	
     //重写onCreateOptionMenu(Menu menu)方法，当菜单第一次被加载时调用
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.FIRST, 0, 0, "Edit").setIcon(R.drawable.edit).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.FIRST, 0, 0, "Edit").setIcon(R.drawable.ic_edit_black_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 

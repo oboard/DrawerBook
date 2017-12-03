@@ -14,15 +14,25 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:resizeableActivity="true"
+        android:roundIcon="@drawable/ic_launcher"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.oboard.drawbook.CropActivity"
+            android:theme="@style/AppTheme.Work" />
         <activity
             android:name="com.oboard.drawbook.DrawActivity"
             android:theme="@style/AppTheme.Base" />
         <activity
             android:name="com.oboard.drawbook.MainActivity"
-            android:label="@string/app_name" >
+            android:alwaysRetainTaskState="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

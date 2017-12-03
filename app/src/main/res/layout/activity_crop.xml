@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<FrameLayout
+		android:id="@+id/draw_toolbar"
+		android:layout_height="64dp"
+		android:layout_width="fill_parent"
+		android:layout_gravity="bottom"
+		android:background="#ffffff"
+		android:translationZ="4dp"
+		android:elevation="4dp">
+
+		<ImageView
+			android:onClick="onCheck"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:layout_height="64dp"
+			android:layout_width="64dp"
+			android:clickable="true"
+			android:src="@drawable/ic_close_black_24dp"
+			android:scaleType="center"
+			android:tint="@color/colorIcon"/>
+
+		<ImageView
+			android:onClick="onClose"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:layout_height="64dp"
+			android:layout_width="64dp"
+			android:layout_gravity="right"
+			android:clickable="true"
+			android:src="@drawable/ic_check_black_24dp"
+			android:scaleType="center"
+			android:tint="@color/colorIcon"/>
+
+	</FrameLayout>
+
+</FrameLayout>
+

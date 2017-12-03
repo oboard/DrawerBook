@@ -15,5 +15,10 @@
         <item name="android:colorPrimaryDark">@color/colorBackgroundDark</item>
         <item name="android:navigationBarColor">@color/colorBackgroundDark</item>
     </style>
+
+    <style name="AppTheme.Work" parent="AppTheme.Base">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
     
 </resources>

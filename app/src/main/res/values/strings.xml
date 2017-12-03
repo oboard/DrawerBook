@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Drawer Book</string>
+    <string name="app_name">Draw Book</string>
     <string name="dialog_1">OK</string>
     <string name="dialog_2">CANCEL</string>
     <string name="dialog_3">Name</string>
