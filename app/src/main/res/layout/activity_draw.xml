@@ -11,6 +11,7 @@
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:layout_marginBottom="48dp"
+		android:scaleType="centerInside"
 		android:transitionName="share"
 		android:layout_gravity="center"/>
 
@@ -45,6 +46,33 @@
 			android:tint="@color/colorIcon"/>
 
 	</LinearLayout>
+
+	<FrameLayout
+		android:layout_width="fill_parent"
+		android:layout_height="56dp">
+
+		<ImageView
+			android:onClick="onBackPressed"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:layout_height="56dp"
+			android:layout_width="56dp"
+			android:clickable="true"
+			android:src="@drawable/ic_arrow_back_black_24dp"
+			android:scaleType="centerInside"
+			android:tint="@color/colorIcon"/>
+
+		<ImageView
+			android:onClick="onEdit"
+			android:background="?android:attr/selectableItemBackgroundBorderless"
+			android:layout_height="56dp"
+			android:layout_width="56dp"
+			android:layout_gravity="right"
+			android:clickable="true"
+			android:src="@drawable/ic_edit_black_24dp"
+			android:scaleType="centerInside"
+			android:tint="@color/colorIcon"/>
+
+	</FrameLayout>
 
 </FrameLayout>
 

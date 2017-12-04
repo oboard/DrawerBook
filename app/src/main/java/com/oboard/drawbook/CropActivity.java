@@ -10,7 +10,7 @@ public class CropActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_crop);
 	}
-	
+
 	public void onClose(View view) {
 		finish();
 	}
@@ -18,5 +18,5 @@ public class CropActivity extends AppCompatActivity {
 	public void onCheck(View view) {
 		finish();
 	}
-	
+
 }

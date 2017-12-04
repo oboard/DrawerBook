@@ -16,24 +16,20 @@ import android.view.View.*;
 import android.view.*;
 import android.support.design.widget.*;
 import android.content.*;
+import android.graphics.drawable.*;
 
 public class DrawActivity extends AppCompatActivity implements OnClickListener {
 
     String title, image;
     int pos = 0;
-	
+
 	//Main imageview
 	ImageView imageView;
 	ImageView item_croprotate;
-	
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(null);
-        getSupportActionBar().setElevation(0);
 
         image = getIntent().getStringExtra("image");
         title = getIntent().getStringExtra("text");
@@ -46,12 +42,12 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
 
         imageView = (ImageView)findViewById(R.id.draw_image);
         imageView.setImageBitmap(S.getStorePic(image));
-		
+
 		//Tool Items
 		item_croprotate = (ImageView)findViewById(R.id.draw_item_croprotate);
 		item_croprotate.setOnClickListener(this);
     }
-	
+
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
@@ -62,39 +58,30 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
 		}
 	}
 	
-    //重写onCreateOptionMenu(Menu menu)方法，当菜单第一次被加载时调用
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.FIRST, 0, 0, "Edit").setIcon(R.drawable.ic_edit_black_24dp).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        return true;
+    public void onEdit(View view) {
+		final AppCompatEditText t = new AppCompatEditText(this);
+		t.setText(getTitle());
+		new AlertDialog.Builder(this).setTitle(R.string.dialog_3).setView(t).setPositiveButton(R.string.dialog_1, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int i) {
+					title = t.getText().toString();
+					S.put("t" + pos, title)
+						.ok();
+					setTitle(title);
+				}
+			}).setNegativeButton(R.string.dialog_2, null)
+			.show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        } else if (item.getTitle().equals("Edit")) {
-            final AppCompatEditText t = new AppCompatEditText(this);
-            t.setText(getTitle());
-            new AlertDialog.Builder(this).setTitle(R.string.dialog_3).setView(t).setPositiveButton(R.string.dialog_1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        title = t.getText().toString();
-                        S.put("t" + pos, title)
-                            .ok();
-                        setTitle(title);
-                    }
-                }).setNegativeButton(R.string.dialog_2, null)
-                .show();
-        }
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed(View view) {
+		onBackPressed();
     }
-    
+
     @Override
     public void onBackPressed() {
         ActivityCompat.finishAfterTransition(this);
         MainActivity.loadData();
         MainActivity.sa.notifyDataSetChanged();
     }
-    
+
 }

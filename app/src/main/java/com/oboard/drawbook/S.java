@@ -112,8 +112,8 @@ public class S {
         return new S();
     } public static S delIndexX(String max_name, String[] name, int index) {
         final int n = get(max_name, 0);
-        for (int i = 0; i < name.length; i++) {
-            delIndex(max_name, name[i], index);
+        for (String s : name) {
+            delIndex(max_name, s, index);
         }
         put(max_name, n - 1);
         ok();
@@ -129,7 +129,7 @@ public class S {
         if (e != null) return e.commit();
         return false;
     }
-    
+
     public static void storePic(String key, Bitmap bitmap) {
         if (key == null || key.isEmpty() || bitmap == null) return;
         FileOutputStream fos = null;

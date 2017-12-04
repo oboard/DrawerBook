@@ -17,6 +17,7 @@ import java.util.*;
 
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.graphics.drawable.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -150,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
 					recycler.requestLayout();
 					recycler.getParent().requestLayout();
-                }
-				catch (FileNotFoundException e) {
+                } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
@@ -168,6 +168,39 @@ public class MainActivity extends AppCompatActivity {
             mData.add(map);
         }
     }
+
+	public void shareMsg(String activityTitle, String msgTitle, String msgText, Bitmap img) {
+		Intent intent = new Intent(Intent.ACTION_SEND); //设置分享行为
+		intent.setType("image/*");
+		intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+		intent.putExtra(Intent.EXTRA_TEXT, msgText);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(Intent.EXTRA_STREAM, saveBitmap(img, "draw_" + System.currentTimeMillis()));
+
+		startActivity(Intent.createChooser(intent, activityTitle));
+	}
+
+	/** * 将图片存到本地 */
+	private static Uri saveBitmap(Bitmap bm, String picName) {
+		try {
+			String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/zdrawbook/" + picName + ".png";    
+			File f = new File(dir);        
+			if (!f.exists()) {
+				f.getParentFile().mkdirs();          
+				f.createNewFile();     
+			}
+			FileOutputStream out = new FileOutputStream(f);            
+			bm.compress(Bitmap.CompressFormat.PNG, 90, out);       
+			out.flush();      
+			out.close();      
+			Uri uri = Uri.fromFile(f);    
+			return uri;  
+		} catch (FileNotFoundException e) {
+            e.printStackTrace();  
+		} catch (IOException e) {
+			e.printStackTrace();    }
+		return null;
+	}
 
     public interface ItemTouchHelperAdapter {
         //数据交换
@@ -252,6 +285,14 @@ public class MainActivity extends AppCompatActivity {
             viewHolder.mTextView.setText((String) datas.get(position).get("text"));
             viewHolder.mImageView.setImageBitmap(S.getStorePic((String) datas.get(position).get("image")));
 
+            viewHolder.mShareView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+						shareMsg(getTitle().toString(), getTitle().toString(),
+								 (String) datas.get(viewHolder.getPosition()).get("text"),
+								 ((BitmapDrawable)viewHolder.mImageView.getDrawable()).getBitmap());
+                    }
+                });
             viewHolder.mView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -270,12 +311,13 @@ public class MainActivity extends AppCompatActivity {
         public class ViewHolder extends RecyclerView.ViewHolder {
             public FrameLayout mView;
             public TextView mTextView;
-            public ImageView mImageView;
+            public ImageView mImageView, mShareView;
             public ViewHolder(View view) {
                 super(view);
                 mView = (FrameLayout) view.findViewById(R.id.item_home_view);
                 mTextView = (TextView) view.findViewById(R.id.item_home_text);
                 mImageView = (ImageView) view.findViewById(R.id.item_home_image);
+                mShareView = (ImageView) view.findViewById(R.id.item_home_share);
             }
         }
 
@@ -283,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemMove(int fromPosition, int toPosition) {
             //交换位置
             Collections.swap(mData, fromPosition, toPosition);
-            for (int i = 1; i < mData.size(); i++) {
+            for (int i = 0; i < mData.size(); i++) {
                 S.put("t" + i, (String) mData.get(i).get("text"))
                     .put("d" + i, (String) mData.get(i).get("image"))
                     .ok();
@@ -297,7 +339,12 @@ public class MainActivity extends AppCompatActivity {
         public void onItemDissmiss(int position) {
             //移除数据
             mData.remove(position);
-            S.delIndexX("tm", new String[] { "t", "d" }, position);
+            for (int i = 0; i < mData.size(); i++) {
+                S.put("t" + i, (String) mData.get(i).get("text"))
+                    .put("d" + i, (String) mData.get(i).get("image"));
+            }
+			S.put("tm", mData.size())
+				.ok();
             notifyItemRemoved(position);
         }
 

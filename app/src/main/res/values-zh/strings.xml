@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	
+	<string name="app_name">一块板</string>
     <string name="dialog_1">确定</string>
     <string name="dialog_2">取消</string>
     <string name="dialog_3">名称</string>
