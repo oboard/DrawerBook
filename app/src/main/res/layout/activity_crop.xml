@@ -5,6 +5,35 @@
 	android:layout_height="fill_parent">
 
 	<FrameLayout
+		android:id="@+id/crop_canvas"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="64dp"
+		android:layout_gravity="center"
+		android:layout_marginTop="24dp">
+
+		<ImageView
+			android:id="@+id/crop_canvas_face"
+			android:scaleType="fitXY"
+			android:adjustViewBounds="true"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"/>
+
+		<View
+			android:id="@+id/crop_canvas_out"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:background="#00000000"/>
+		
+		<View
+			android:id="@+id/crop_canvas_rect"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:background="@drawable/shape_crop"/>
+
+	</FrameLayout>
+
+	<FrameLayout
 		android:id="@+id/draw_toolbar"
 		android:layout_height="64dp"
 		android:layout_width="fill_parent"

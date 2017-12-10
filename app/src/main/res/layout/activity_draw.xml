@@ -10,10 +10,10 @@
 		android:id="@+id/draw_image"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
+		android:layout_marginTop="48dp"
 		android:layout_marginBottom="48dp"
 		android:scaleType="centerInside"
-		android:transitionName="share"
-		android:layout_gravity="center"/>
+		android:transitionName="share"/>
 
 	<LinearLayout
 		android:id="@+id/draw_toolbar"

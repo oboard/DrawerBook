@@ -21,7 +21,7 @@ import android.graphics.drawable.*;
 public class DrawActivity extends AppCompatActivity implements OnClickListener {
 
     String title, image;
-    int pos = 0;
+    int pos;
 
 	//Main imageview
 	ImageView imageView;
@@ -31,9 +31,11 @@ public class DrawActivity extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+		//获得资源
         image = getIntent().getStringExtra("image");
         title = getIntent().getStringExtra("text");
         pos = getIntent().getIntExtra("pos", pos);
+		
         setContentView(R.layout.activity_draw);
         setTitle(title);
 

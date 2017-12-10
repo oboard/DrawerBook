@@ -15,6 +15,7 @@
 		android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 	<application
+		android:largeHeap="true"
 		android:supportsRtl="true"
 		android:allowBackup="true"
 		android:theme="@style/AppTheme"
